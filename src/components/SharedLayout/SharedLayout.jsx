@@ -1,20 +1,27 @@
 import { Toaster } from 'react-hot-toast';
-import { NavLink, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { Container, Header, StyledLink } from './SharedLayout.styled';
+import { Suspense } from 'react';
+import Loader from 'components/Loader/Loader';
 
 const SharedLayout = () => (
-  <div>
-    <header>
-      <nav>
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/movies">Movies</NavLink>
-      </nav>
-    </header>
+  <>
+    <Header>
+      <Container>
+        <nav>
+          <StyledLink to="/">Home</StyledLink>
+          <StyledLink to="/movies">Movies</StyledLink>
+        </nav>
+      </Container>
+    </Header>
     <main>
-      <Outlet />
+      <Container>
+        <Suspense fallback={<Loader />}>
+          <Outlet />
+        </Suspense>
+      </Container>
     </main>
-    <div>
-      <Toaster />
-    </div>
-  </div>
+    <Toaster />
+  </>
 );
 export default SharedLayout;

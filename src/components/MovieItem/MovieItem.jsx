@@ -1,3 +1,6 @@
+import { ContentWrap, FlexWrap, Img } from './MovieItem.styled';
+import { Title } from 'pages/Home/Home.styled';
+
 const MovieItem = ({ movie }) => {
   const {
     original_title,
@@ -8,26 +11,25 @@ const MovieItem = ({ movie }) => {
     release_date,
   } = movie;
   return (
-    <div>
-      <div>
-        {poster_path && (
-          <img
-            src={`https://image.tmdb.org/t/p/w500${poster_path}`}
-            alt="movie poster"
-          />
-        )}
-      </div>
-      <div>
+    <FlexWrap>
+      {poster_path && (
+        <Img
+          src={`https://image.tmdb.org/t/p/w500${poster_path}`}
+          alt="movie poster"
+        />
+      )}
+
+      <ContentWrap>
         <h2>
           {original_title}({release_date.slice(0, 4)})
         </h2>
         <p>User Score: {Math.round(vote_average * 10)}%</p>
-        <p>Overview</p>
+        <Title>Overview</Title>
         <p>{overview}</p>
-        <p>Genres</p>
+        <Title>Genres</Title>
         <p>{genres?.map(({ name }) => name).join(', ')}</p>
-      </div>
-    </div>
+      </ContentWrap>
+    </FlexWrap>
   );
 };
 

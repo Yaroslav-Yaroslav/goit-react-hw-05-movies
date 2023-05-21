@@ -3,6 +3,9 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { fetchMovieByQuery } from 'services/api';
 import { BiSearchAlt } from 'react-icons/bi';
 import { toast } from 'react-hot-toast';
+import { Button, Form, Input } from './Movies.styled';
+import { Container } from 'components/SharedLayout/SharedLayout.styled';
+import { ItemList, List } from 'pages/Home/Home.styled';
 const Movies = () => {
   const [movies, setMovies] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -10,15 +13,20 @@ const Movies = () => {
   const location = useLocation();
   useEffect(() => {
     if (searchQuery === '') return;
+    const controller = new AbortController();
+
     const fetchData = async query => {
       try {
-        const fetchedMovies = await fetchMovieByQuery(query);
+        const fetchedMovies = await fetchMovieByQuery(query, controller);
         setMovies(fetchedMovies);
       } catch (error) {
         console.log('error:', error);
       }
     };
     fetchData(searchQuery);
+    return () => {
+      controller.abort();
+    };
   }, [searchQuery]);
   const handleSubmit = e => {
     e.preventDefault();
@@ -30,26 +38,27 @@ const Movies = () => {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Search movies" name="query" />
-        <button type="submit">
-          Search button <BiSearchAlt size="20" />
-        </button>
-      </form>
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <Input type="text" placeholder="Search movies" name="query" />
+        <Button type="submit">
+          Search
+          <BiSearchAlt size="20" />
+        </Button>
+      </Form>
       {movies && (
-        <ul>
+        <List>
           {movies.map(({ title, id }) => (
-            <li key={id}>
+            <ItemList key={id}>
               <Link to={`${id}`} state={{ from: location }}>
                 {title}
               </Link>
-            </li>
+            </ItemList>
           ))}
-        </ul>
+        </List>
       )}
       {movies?.length === 0 && <div>There are no movie for this request😇</div>}
-    </>
+    </Container>
   );
 };
 export default Movies;
