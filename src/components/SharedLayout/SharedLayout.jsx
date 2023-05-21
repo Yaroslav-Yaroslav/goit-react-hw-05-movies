@@ -1,4 +1,6 @@
+import { Toaster } from 'react-hot-toast';
 import { NavLink, Outlet } from 'react-router-dom';
+
 const SharedLayout = () => (
   <div>
     <header>
@@ -10,6 +12,9 @@ const SharedLayout = () => (
     <main>
       <Outlet />
     </main>
+    <div>
+      <Toaster />
+    </div>
   </div>
 );
 export default SharedLayout;
