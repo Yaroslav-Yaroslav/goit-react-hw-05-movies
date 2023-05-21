@@ -9,8 +9,6 @@ const Reviews = () => {
     const fetchData = async id => {
       const fetchedReviews = await fetchReviews(id);
       setReviews(fetchedReviews.results);
-
-      console.log('fetchedReviews:', fetchedReviews.results);
     };
     fetchData(movieId);
   }, [movieId]);

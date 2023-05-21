@@ -1,24 +1,27 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { fetchMovieByQuery } from 'services/api';
 import { BiSearchAlt } from 'react-icons/bi';
 import { toast } from 'react-hot-toast';
 const Movies = () => {
   const [movies, setMovies] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get('query');
-
+  const searchQuery = searchParams.get('query') ?? '';
+  const location = useLocation();
   useEffect(() => {
-    if (searchQuery === null) return;
+    if (searchQuery === '') return;
     const fetchData = async query => {
-      const fetchedMovies = await fetchMovieByQuery(query);
-      setMovies(fetchedMovies);
-      console.log('fetchedMovies:', fetchedMovies);
+      try {
+        const fetchedMovies = await fetchMovieByQuery(query);
+        setMovies(fetchedMovies);
+      } catch (error) {
+        console.log('error:', error);
+      }
     };
     fetchData(searchQuery);
   }, [searchQuery]);
-    const handleSubmit = e => {
-      e.preventDefault()
+  const handleSubmit = e => {
+    e.preventDefault();
     if (e.target.elements.query.value === '') {
       return toast.error("This didn't work. Please, enter the search");
     }
@@ -27,7 +30,7 @@ const Movies = () => {
   };
 
   return (
-    <div>
+    <>
       <form onSubmit={handleSubmit}>
         <input type="text" placeholder="Search movies" name="query" />
         <button type="submit">
@@ -37,11 +40,16 @@ const Movies = () => {
       {movies && (
         <ul>
           {movies.map(({ title, id }) => (
-            <li key={id}>{title}</li>
+            <li key={id}>
+              <Link to={`${id}`} state={{ from: location }}>
+                {title}
+              </Link>
+            </li>
           ))}
         </ul>
       )}
-    </div>
+      {movies?.length === 0 && <div>There are no movie for this request😇</div>}
+    </>
   );
 };
 export default Movies;
